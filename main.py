@@ -1,4 +1,6 @@
 import datetime as dt
+# Докстринги в коде отсутствуют.
+# Подробнее о докстрингах тут: https://peps.python.org/pep-0257/
 
 
 class Record:
