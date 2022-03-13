@@ -4,7 +4,8 @@ import datetime as dt
 class Record:
     def __init__(self, amount, comment, date=''):
         self.amount = amount
-        self.date = (
+        self.date = ( 
+            # Можно вынести манипуляции с датой в отдельный метод. Или просто поместить все в одну строку.
             dt.datetime.now().date() if
             not
             date else dt.datetime.strptime(date, '%d.%m.%Y').date())
@@ -17,12 +18,16 @@ class Calculator:
         self.records = []
 
     def add_record(self, record):
+        # Имеет смысл добавить проверки на невалидность типа и пустую запись.
         self.records.append(record)
 
     def get_today_stats(self):
         today_stats = 0
+        # Названия переменных следует писать с маленькой буквы.
         for Record in self.records:
+            # данную конструкцию if можно сократить через list comprehensions
             if Record.date == dt.datetime.now().date():
+                # Можно использовать конструкцию +=, как сделано в методе ниже.
                 today_stats = today_stats + Record.amount
         return today_stats
 
@@ -45,13 +50,15 @@ class CaloriesCalculator(Calculator):
             return f'Сегодня можно съесть что-нибудь' \
                    f' ещё, но с общей калорийностью не более {x} кКал'
         else:
+            # Необходимо убрать скобки и добавить пробел в соответствии с PEP8.
             return('Хватит есть!')
 
 
 class CashCalculator(Calculator):
+    # Немного неактуальный курс.
     USD_RATE = float(60)  # Курс доллар США.
     EURO_RATE = float(70)  # Курс Евро.
-
+    # для названий аргументов функций используются маленькие буквы, usd_rate=USD_RATE, euro_rate=EURO_RATE. А вообще они уже есть внутри класса.
     def get_today_cash_remained(self, currency,
                                 USD_RATE=USD_RATE, EURO_RATE=EURO_RATE):
         currency_type = currency
@@ -63,19 +70,24 @@ class CashCalculator(Calculator):
             cash_remained /= EURO_RATE
             currency_type = 'Euro'
         elif currency_type == 'rub':
+            # Ненужная строка ниже. Можно удалить.
             cash_remained == 1.00
             currency_type = 'руб'
+        # Имеет смысл явно прописать случай, если на вход подается неизвестная валюта.
         if cash_remained > 0:
             return (
+                # Формат вывода. В коде используются разные форматы вывода, f и format. Стоит придерживаться одного формата. 
                 f'На сегодня осталось {round(cash_remained, 2)} '
                 f'{currency_type}'
             )
         elif cash_remained == 0:
             return 'Денег нет, держись'
+        # elif можно заменить на elseю
         elif cash_remained < 0:
             return 'Денег нет, держись:' \
                    ' твой долг - {0:.2f} {1}'.format(-cash_remained,
                                                      currency_type)
-
+        
+    # Переопределение метода здесь бессмысленно. Можно удалить. 
     def get_week_stats(self):
         super().get_week_stats()
